@@ -1,0 +1,65 @@
+// Prisma schema for Secure Notes Vault
+// Dev uses SQLite (file-based, free, zero-config).
+// For production on Vercel, switch provider to "postgresql" and point
+// DATABASE_URL at a free Postgres instance (Neon / Supabase / Railway free tier)
+// since Vercel's filesystem is ephemeral and won't persist a SQLite file.
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  passwordHash  String
+  createdAt     DateTime       @default(now())
+  notes         Note[]
+  reminders     Reminder[]
+  notifications Notification[]
+  resetTokens   PasswordResetToken[]
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  title       String
+  content     String   // encrypted (AES-256-GCM), stored as base64 "iv:tag:ciphertext"
+  pinned      Boolean  @default(false)
+  deletedAt   DateTime? // soft delete -> recycle bin
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Reminder {
+  id        String   @id @default(cuid())
+  title     String   // encrypted
+  content   String   // encrypted
+  remindAt  DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  title     String   // encrypted
+  content   String   // encrypted
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}

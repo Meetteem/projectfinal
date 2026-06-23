@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0c1220;
+  --panel: #121a2b;
+  --panel-border: #21304a;
+  --ink: #e7ecf5;
+  --muted: #8c9bb5;
+  --accent: #3ddc97;
+  --accent-dim: #1f8f63;
+  --danger: #ef6f6f;
+  --mark-bg: #2a3f2c;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+* {
+  border-color: var(--panel-border);
+}
+
+body {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+.vault-heading {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+mark {
+  background: var(--mark-bg);
+  color: var(--accent);
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #04150d;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  transition: opacity 0.15s ease;
+}
+.btn-primary:hover {
+  opacity: 0.88;
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--ink);
+  border-radius: 8px;
+  padding: 0.55rem 1rem;
+  transition: border-color 0.15s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--accent-dim);
+}
+
+.btn-danger {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+}
+.btn-danger:hover {
+  background: rgba(239, 111, 111, 0.08);
+}
+
+.field {
+  background: #0a0f1c;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  color: var(--ink);
+  width: 100%;
+}
+.field:focus {
+  outline: 2px solid var(--accent-dim);
+  outline-offset: 1px;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+  display: block;
+}
