@@ -1,10 +1,14 @@
 // Prisma schema for Secure Notes Vault
 // Uses Postgres (free Neon instance) so data persists on Vercel's
 // serverless/ephemeral filesystem.
+//
+// NOTE: Prisma 7 no longer allows `url` inside the datasource block here —
+// the connection string is configured in prisma.config.ts (for the CLI) and
+// passed as `datasourceUrl` to the PrismaClient constructor (for runtime).
+// See https://pris.ly/d/config-datasource
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 generator client {
