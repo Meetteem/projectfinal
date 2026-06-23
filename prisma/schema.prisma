@@ -1,11 +1,9 @@
 // Prisma schema for Secure Notes Vault
-// Dev uses SQLite (file-based, free, zero-config).
-// For production on Vercel, switch provider to "postgresql" and point
-// DATABASE_URL at a free Postgres instance (Neon / Supabase / Railway free tier)
-// since Vercel's filesystem is ephemeral and won't persist a SQLite file.
+// Uses Postgres (free Neon instance) so data persists on Vercel's
+// serverless/ephemeral filesystem.
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

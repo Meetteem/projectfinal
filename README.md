@@ -10,7 +10,7 @@ project, using only free services.
 |---|---|---|
 | Framework | Next.js 16 (App Router, TS) | Single deploy target, free on Vercel |
 | Auth | Auth.js (NextAuth) credentials + bcrypt | No paid auth provider needed |
-| Database | SQLite (dev) via Prisma, Postgres (prod) | SQLite is free/local; for prod use a free tier like Neon or Supabase |
+| Database | Postgres (free Neon tier) via Prisma | Vercel's filesystem is ephemeral, so SQLite won't persist there — Neon's free tier covers this comfortably |
 | Encryption | Node `crypto`, AES-256-GCM, per-user key via HMAC-SHA256(email) | Same idea as the original Fernet/email-derived key, no external KMS |
 | AI summarization | Hugging Face free Inference API (`sshleifer/distilbart-cnn-12-6`), with a local fallback summarizer if no token is set | Free tier, and the app still works with zero signups |
 | Flowcharts | Mermaid.js rendered client-side | No Graphviz binary, no server cost |
@@ -23,26 +23,19 @@ Copy `.env.example` to `.env` and fill in:
 
 | Variable | Required? | Notes |
 |---|---|---|
-| `DATABASE_URL` | Yes | `file:./dev.db` locally. For Vercel, use a free Postgres connection string (see below) since Vercel's filesystem is ephemeral and SQLite won't persist there. |
+| `DATABASE_URL` | Yes | A free Postgres connection string from [neon.tech](https://neon.tech). Tables are created automatically on build/deploy via `prisma db push` (see `package.json`'s `build` script) — no manual migration step needed. |
 | `NEXTAUTH_SECRET` | Yes | Generate with `npx auth secret` or `openssl rand -base64 32`. |
 | `NEXTAUTH_URL` | Yes | `http://localhost:3000` locally; your deployed URL in production. |
 | `ENCRYPTION_SECRET` | Yes | Generate with `openssl rand -hex 32`. Losing this makes all stored data unrecoverable, so back it up somewhere safe. |
 | `HUGGINGFACE_API_KEY` | No | Free token from huggingface.co/settings/tokens. Leave blank to use the built-in local summarizer instead. |
 | `EMAIL_USER` / `EMAIL_PASS` | No | Gmail address + an App Password (myaccount.google.com/apppasswords, requires 2-Step Verification). Leave blank to have reset links printed to the server console instead of emailed. |
 
-### Switching to Postgres for production
-
-1. Create a free database at neon.tech (or Supabase).
-2. In `prisma/schema.prisma`, change `provider = "sqlite"` to `provider = "postgresql"`.
-3. Set `DATABASE_URL` to the connection string Neon gives you.
-4. Run `npx prisma db push` once to create the tables.
-
 ## Local development
 
 ```bash
 npm install
-cp .env.example .env   # fill in the values above
-npx prisma db push     # creates dev.db and the tables
+cp .env.example .env   # fill in DATABASE_URL (Neon) and the two secrets
+npx prisma db push     # creates the tables in your Neon database
 npm run dev
 ```
 
